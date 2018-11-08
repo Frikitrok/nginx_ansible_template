@@ -1,0 +1,5 @@
+---
+- name: 'Remove template dir'
+  file:
+    state: absent
+    path: "{{ conf_path }}/{{ domain }}"

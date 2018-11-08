@@ -1,0 +1,32 @@
+---
+- name: 'Parse file'
+  set_fact:
+    content: "{{ lookup('file', records_file, wantlist=True) }}"
+    domains: []
+    cert: []
+    key: []
+
+- name: 'Recreate list'
+  set_fact: 
+    domains: "{{ domains }} + [ '{{ item.split(" ")[0] }}' ]"
+    cert: "{{ item.split(" ")[1] }}"
+    key: "{{ item.split(" ")[2] }}"
+  loop: "{{ content }}"
+
+
+
+- name: 'create conf folder'
+  file: 
+    path: "{{ conf_path }}/{{ domain }}"
+    state: directory
+    owner: nginx
+    group: nginx
+    mode: 0644
+    
+- name: 'Default type'
+  import_tasks: default.yml
+  when: cert is undefined
+
+- name: 'SSL type'
+  import_tasks: ssl.yml
+  when: cert is defined

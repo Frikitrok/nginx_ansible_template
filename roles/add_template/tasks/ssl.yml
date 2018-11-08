@@ -1,0 +1,8 @@
+---
+- name: 'copy template'
+  template:
+    src: "conf.ssl.j2"
+    dest: "{{ conf_path }}/{{ domain }}/conf"
+    owner: nginx
+    group: nginx
+    mode: 0644

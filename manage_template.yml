@@ -1,0 +1,23 @@
+---
+- name: Backup and restore Databases
+  hosts: all
+  become: yes
+
+  roles:
+
+    - role: add_template
+      when: action == 'add'
+    
+    - role: remove_template
+      when: action == 'remove'
+
+    - role: remove_template
+      when: action == 'refresh_all'
+  
+  vars:
+    conf_path: "/etc/nginx/config.d/"
+    cert_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.crt"
+    key_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.key"
+    records_file: "/etc/nginx/all"
+
+

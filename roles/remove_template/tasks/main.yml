@@ -1,5 +1,10 @@
 ---
-- name: 'Remove template dir'
+- name: 'Remove conf'
   file:
     state: absent
     path: "{{ conf_path }}/{{ domain }}"
+
+- name: 'Remove ssl dir'
+  file:
+    state: absent
+    path: "{{ ssl_path }}/{{ domain }}"

@@ -2,7 +2,31 @@
 - name: 'copy template'
   template:
     src: "conf.ssl.j2"
-    dest: "{{ conf_path }}/{{ domain }}/conf"
-    owner: nginx
-    group: nginx
+    dest: "{{ conf_path }}/{{ domain }}"
+#    owner: nginx
+#    group: nginx
+    mode: 0644
+
+- name: 'create ssl folder'
+  file: 
+    path: "{{ ssl_path }}/{{ domain }}"
+    state: directory
+#    owner: nginx
+#    group: nginx
+    mode: 0644
+
+- name: 'copy ssl cert'
+  copy:
+    src: "{{ cert }}"
+    dest: "{{ ssl_path }}/{{ domain }}/"
+#    owner: nginx
+#    group: nginx
+    mode: 0644
+
+- name: 'copy ssl key'
+  copy:
+    src: "{{ key }}"
+    dest: "{{ ssl_path }}/{{ domain }}/"
+#    owner: nginx
+#    group: nginx
     mode: 0644

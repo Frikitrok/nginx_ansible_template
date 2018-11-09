@@ -1,10 +1,18 @@
 ---
-- name: 'create conf folder'
+- name: 'verify conf folder'
   file: 
-    path: "{{ conf_path }}/{{ domain }}"
+    path: "{{ conf_path }}"
     state: directory
-    owner: nginx
-    group: nginx
+#    owner: nginx
+#    group: nginx
+    mode: 0644
+
+- name: 'verify conf folder'
+  file: 
+    path: "{{ ssl_path }}"
+    state: directory
+#    owner: nginx
+#    group: nginx
     mode: 0644
     
 - name: 'Default type'

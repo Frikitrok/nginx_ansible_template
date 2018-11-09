@@ -1,32 +1,38 @@
 ---
 - name: 'Parse file'
   set_fact:
-    content: "{{ lookup('file', records_file, wantlist=True) }}"
-    domains: []
-    cert: []
-    key: []
+    content: "{{ lookup('file', records_file).split('\n') }}"
 
-- name: 'Recreate list'
-  set_fact: 
-    domains: "{{ domains }} + [ '{{ item.split(" ")[0] }}' ]"
-    cert: "{{ item.split(" ")[1] }}"
-    key: "{{ item.split(" ")[2] }}"
+# - debug:
+#     msg: "{{ content }}"
+
+- name: 'Clear all configs'
+  file:
+    state: absent
+    path: "{{ conf_path }}/"
+
+- name: 'Clear all ssl'
+  file:
+    state: absent
+    path: "{{ ssl_path }}/"
+
+- name: 'Restore configs folder'
+  file:
+    state: directory
+    path: "{{ conf_path }}/"
+
+- name: 'Restore ssl folder'
+  file:
+    state: directory
+    path: "{{ ssl_path }}/"
+
+- name: 'Call add_tempalte'
+  include_role:
+    name: add_template
+  vars:
+    domain: "{{ item.split(' ')[0] }}"
+    cert: "{{ item.split(' ')[1] }}"
+    key: "{{ item.split(' ')[2] }}"
   loop: "{{ content }}"
 
 
-
-- name: 'create conf folder'
-  file: 
-    path: "{{ conf_path }}/{{ domain }}"
-    state: directory
-    owner: nginx
-    group: nginx
-    mode: 0644
-    
-- name: 'Default type'
-  import_tasks: default.yml
-  when: cert is undefined
-
-- name: 'SSL type'
-  import_tasks: ssl.yml
-  when: cert is defined

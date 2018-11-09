@@ -1,6 +1,6 @@
 ---
-- name: Backup and restore Databases
-  hosts: all
+- name: Begin
+  hosts: 127.0.0.1
   become: yes
 
   roles:
@@ -11,13 +11,20 @@
     - role: remove_template
       when: action == 'remove'
 
-    - role: remove_template
+    - role: refresh_all
       when: action == 'refresh_all'
   
+  tasks:
+    - name: Reload service nginx
+      service:
+        name: httpd
+        state: reloaded
+
   vars:
-    conf_path: "/etc/nginx/config.d/"
-    cert_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.crt"
-    key_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.key"
-    records_file: "/etc/nginx/all"
+    conf_path: "/tmp/nginx/records"
+    ssl_path: "/tmp/nginx/ssl"
+#    cert_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.crt"
+#    key_path: "/etc/nginx/config.d/ssl/{{ domain }}/ssl.key"
+    records_file: "/tmp/all"
 
 
